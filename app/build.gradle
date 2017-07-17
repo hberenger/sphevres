@@ -46,5 +46,5 @@ dependencies {
     compile "org.gearvrf:framework:$gearvrfVersion"
     compile "org.gearvrf:backend_daydream:$gearvrfVersion"
     compile "org.gearvrf:backend_oculus:$gearvrfVersion"
-    compile 'com.google.vr:sdk-base:1.30.0'
+    compile 'com.google.vr:sdk-base:1.70.0'
 }
