@@ -25,4 +25,20 @@ public class MainActivity extends GVRActivity {
 
         player.start();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (player != null) {
+            player.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (player != null) {
+            player.rewind();
+        }
+    }
 }

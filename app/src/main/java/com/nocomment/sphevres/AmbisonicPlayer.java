@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -50,6 +51,24 @@ public class AmbisonicPlayer {
 
     void start() {
         player.setPlayWhenReady(true);
+    }
+
+    void pause() {
+        player.setPlayWhenReady(false);
+    }
+
+    private boolean isReadyForRewind() {
+        return player != null
+                && !player.isLoading()
+                && player.getPlaybackState() != ExoPlayer.STATE_IDLE
+                && player.getPlaybackState() != ExoPlayer.STATE_BUFFERING;
+    }
+
+    void rewind() {
+        if (isReadyForRewind()) {
+            player.seekTo(0);
+            player.setPlayWhenReady(true);
+        }
     }
 
     void applyTransform(GVRTransform transform) {
