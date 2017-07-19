@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.BatteryManager;
+import android.os.Handler;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
 
@@ -15,14 +16,33 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         PowerConnectionReceiver.readBatteryInfo(batteryStatus);
 
         if (batteryStatus.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
-            MediaPlayer mPlayer = MediaPlayer.create(context, R.raw.chime);
-            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mPlayer.start();
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            audioManager.setMode(AudioManager.MODE_NORMAL);
+            audioManager.setSpeakerphoneOn(false);
+
+            playAlert(context, R.raw.chime);
+
         } else if (batteryStatus.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
-            MediaPlayer mPlayer = MediaPlayer.create(context, R.raw.ahem);
-            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mPlayer.start();
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+            audioManager.setSpeakerphoneOn(true);
+            audioManager.setStreamVolume (AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+
+            playAlert(context, R.raw.ahem);
         }
+    }
+
+    private void playAlert(Context context, int id) {
+        final MediaPlayer mPlayer = MediaPlayer.create(context, id);
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mPlayer.start();
+            }
+        }, 2000);
     }
 
     static void checkBattery(Context context) {
