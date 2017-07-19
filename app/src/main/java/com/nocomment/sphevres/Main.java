@@ -2,19 +2,26 @@ package com.nocomment.sphevres;
 
 import android.graphics.Color;
 
+import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRCameraRig;
 import org.gearvrf.GVRContext;
+import org.gearvrf.GVRDirectLight;
 import org.gearvrf.GVRMain;
+import org.gearvrf.GVRMaterial;
 import org.gearvrf.GVRScene;
 import org.gearvrf.GVRSceneObject;
+import org.gearvrf.GVRTexture;
 import org.gearvrf.animation.GVRAnimation;
 import org.gearvrf.animation.GVRRepeatMode;
 import org.gearvrf.animation.GVRRotationByAxisWithPivotAnimation;
 import org.gearvrf.scene_objects.GVRModelSceneObject;
+import org.gearvrf.scene_objects.GVRSphereSceneObject;
+import org.joml.Quaternionf;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 final class Main extends GVRMain {
 
@@ -45,6 +52,9 @@ final class Main extends GVRMain {
 
         GVRSceneObject solarSystem = buildSolarSystem(gvrContext, scene);
         scene.addSceneObject(solarSystem);
+
+        GVRSceneObject environment = buildEnvironment(gvrContext);
+        scene.addSceneObject(environment);
 
         for (GVRAnimation animation : mAnimations) {
             animation.start(gvrContext.getAnimationEngine());
@@ -113,5 +123,24 @@ final class Main extends GVRMain {
 
     private void rotate(GVRSceneObject object, float duration) {
         rotate(object, duration, false);
+    }
+
+    private GVRSceneObject buildEnvironment(GVRContext context) {
+        Future<GVRTexture> tex = context.getAssetLoader().loadFutureCubemapTexture(new GVRAndroidResource(context, R.raw.lycksele3));
+        GVRMaterial material = new GVRMaterial(context, GVRMaterial.GVRShaderType.Cubemap.ID);
+        material.setMainTexture(tex);
+        GVRSphereSceneObject environment = new GVRSphereSceneObject(context, 18, 36, false, material, 4, 4);
+        environment.getTransform().setScale(120.0f, 120.0f, 120.0f);
+
+
+        GVRDirectLight sunLight = new GVRDirectLight(context);
+        sunLight.setAmbientIntensity(0.4f, 0.4f, 0.4f, 1.0f);
+        sunLight.setDiffuseIntensity(0.6f, 0.6f, 0.6f, 1.0f);
+        sunLight.setDefaultOrientation(new Quaternionf(1.f, 0.f, 0.f));
+        sunLight.setCastShadow(false);
+
+        environment.attachComponent(sunLight);
+
+        return environment;
     }
 }
