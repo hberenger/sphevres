@@ -10,6 +10,8 @@ public class MainActivity extends GVRActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setMain(new Main(), "gvr.xml");
+
+        PowerConnectionReceiver.checkBattery(this);
     }
 
 }
