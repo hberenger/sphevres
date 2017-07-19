@@ -6,12 +6,23 @@ import org.gearvrf.GVRActivity;
 
 public class MainActivity extends GVRActivity {
 
+    private AmbisonicPlayer player;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setMain(new Main(), "gvr.xml");
 
         PowerConnectionReceiver.checkBattery(this);
+
+        player = new AmbisonicPlayer(this.getApplicationContext());
+
+        setMain(new Main(player), "gvr.xml");
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        player.start();
+    }
 }

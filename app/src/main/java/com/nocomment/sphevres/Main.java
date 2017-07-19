@@ -2,6 +2,7 @@ package com.nocomment.sphevres;
 
 import android.graphics.Color;
 
+import org.gearvrf.GVRCameraRig;
 import org.gearvrf.GVRContext;
 import org.gearvrf.GVRMain;
 import org.gearvrf.GVRScene;
@@ -16,10 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class Main extends GVRMain {
+
+    private GVRCameraRig cameraRig;
     private List<GVRAnimation> mAnimations = new ArrayList<GVRAnimation>();
+    private AmbisonicPlayer player;
+
+    Main(AmbisonicPlayer player) {
+        super();
+        this.player = player;
+    }
+
     @Override
     public void onInit(GVRContext gvrContext) throws Throwable {
         final GVRScene scene = gvrContext.getMainScene();
+        cameraRig = scene.getMainCameraRig();
 
         scene.getMainCameraRig().getLeftCamera().setBackgroundColor(Color.BLUE);
         scene.getMainCameraRig().getRightCamera().setBackgroundColor(Color.BLUE);
@@ -48,6 +59,8 @@ final class Main extends GVRMain {
 
     @Override
     public void onStep() {
+        player.applyTransform(cameraRig.getHeadTransform());
+    }
 
     private GVRSceneObject buildSolarSystem(GVRContext gvrContext, GVRScene scene) throws IOException {
         GVRSceneObject globalPositionObject = new GVRSceneObject(gvrContext);
