@@ -1,6 +1,8 @@
 package com.nocomment.sphevres;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.widget.Toast;
 
 import org.gearvrf.GVRActivity;
 
@@ -11,6 +13,20 @@ public class MainActivity extends GVRActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Thread.setDefaultUncaughtExceptionHandler(new RestartExceptionHandler(this));
+
+        if (getIntent().getBooleanExtra("crash", false)) {
+            Toast.makeText(this, "App restarted after crash", Toast.LENGTH_SHORT).show();
+        } else {
+            // crash after 10 sec - to test the Restart exception Handler
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    throw new NullPointerException();
+                }
+            }, 10000);
+        }
 
         PowerConnectionReceiver.checkBattery(this);
 
