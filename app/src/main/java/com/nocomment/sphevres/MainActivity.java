@@ -1,5 +1,6 @@
 package com.nocomment.sphevres;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
@@ -13,6 +14,9 @@ public class MainActivity extends GVRActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        sendBroadcast(closeDialog);
 
         Thread.setDefaultUncaughtExceptionHandler(new RestartExceptionHandler(this));
 
