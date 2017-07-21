@@ -41,7 +41,7 @@ public class AmbisonicPlayer {
         String userAgent = Util.getUserAgent(context, "SpheVRes"); // $$$$
 
         MediaSource source = new ExtractorMediaSource(
-                Uri.parse("asset:///woman_walking.wav"),
+                Uri.parse("asset:///sascent_bino.m4a"),
                 new DefaultDataSourceFactory(context, userAgent),
                 new DefaultExtractorsFactory(), null, null
         );
