@@ -14,6 +14,7 @@ public class MyApplication extends Application {
         instance = this;
 
         Intent service = new Intent(this.getApplicationContext(), AngelService.class);
+        service.setAction("start"); // $$$$
         startService(service);
     }
     @Override

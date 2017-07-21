@@ -32,20 +32,34 @@ public class AngelService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (intent.getAction().equals("close")) { // $$$$ constant
+            stopForeground(true);
+            stopSelf();
+            // $$$$ TODO ce serait bien de kill l'app
+        } else if (intent.getAction().equals("start")) {
+            Intent notificationIntent = new Intent(this, MainActivity.class);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle("Sphevres")
-                .setContentText("I'm your guardian angel!")
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentIntent(pendingIntent)
-                .build();
+            Intent closeIntent = new Intent(this, AngelService.class);
+            closeIntent.setAction("close");
+            PendingIntent pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
 
-        startForeground(1729, notification); // $$$$ const
+            Notification.Action closeAction =
+                    new Notification.Action.Builder(R.drawable.ic_close, "Close service", pendingCloseIntent).build();
 
-        handler.postDelayed(runnable, 10000); // $$$$ const
+            Notification notification = new Notification.Builder(this)
+                    .setContentTitle("Sphevres")
+                    .setContentText("I'm your guardian angel!")
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentIntent(pendingIntent)
+                    .addAction(closeAction)
+                    .build();
+
+            startForeground(1729, notification);
+
+            handler.postDelayed(runnable, 10000);
+        }
 
         return START_STICKY;
     }
