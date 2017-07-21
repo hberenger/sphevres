@@ -1,13 +1,18 @@
 package com.nocomment.sphevres;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Toast;
+
+import java.util.List;
 
 public class AngelService extends Service {
 
@@ -24,10 +29,39 @@ public class AngelService extends Service {
         handler = new Handler();
         runnable = new Runnable() {
             public void run() {
+                ActivityManager activityManager = (ActivityManager) getSystemService (Context.ACTIVITY_SERVICE);
+                List<ActivityManager.RunningTaskInfo> tasksInfos = activityManager.getRunningTasks(Integer.MAX_VALUE);
+
+                if (!isMainAppRunning(tasksInfos)) {
+                    Log.e("TOTO", "Main app not running... rebooting !");
+                    Intent mainIntent = new Intent(AngelService.this, MainActivity.class);
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+                    startActivity(mainIntent);
+                }
+
+                // $$$$ TODO : update notif msg
+
                 Toast.makeText(AngelService.this, "Service is still running (" + (msgId++) + ")", Toast.LENGTH_LONG).show();
                 handler.postDelayed(runnable, 10000);
             }
         };
+    }
+
+    private boolean isMainAppRunning(List<ActivityManager.RunningTaskInfo> tasksInfos) {
+        if (tasksInfos == null) {
+            return false;
+        }
+        for (final ActivityManager.RunningTaskInfo tasksInfo : tasksInfos) {
+            if (tasksInfo.topActivity != null) {
+                String topActivityName = tasksInfo.topActivity.getClassName();
+                if (topActivityName.contains("sphevres.MainActivity")
+                        && tasksInfo.numRunning > 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
