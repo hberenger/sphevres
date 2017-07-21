@@ -1,6 +1,7 @@
 package com.nocomment.sphevres;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 
 import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRCameraRig;
@@ -28,6 +29,7 @@ final class Main extends GVRMain {
     private GVRCameraRig cameraRig;
     private List<GVRAnimation> mAnimations = new ArrayList<GVRAnimation>();
     private AmbisonicPlayer player;
+    private GVRScene scene;
 
     Main(AmbisonicPlayer player) {
         super();
@@ -36,19 +38,13 @@ final class Main extends GVRMain {
 
     @Override
     public void onInit(GVRContext gvrContext) throws Throwable {
-        final GVRScene scene = gvrContext.getMainScene();
+        scene = gvrContext.getMainScene();
         cameraRig = scene.getMainCameraRig();
 
         scene.getMainCameraRig().getLeftCamera().setBackgroundColor(Color.BLUE);
         scene.getMainCameraRig().getRightCamera().setBackgroundColor(Color.BLUE);
 
-        try {
-            GVRModelSceneObject geosphere = gvrContext.getAssetLoader().loadModel("biosphere3-3ds/biosphere3.3ds", scene);
-            geosphere.getTransform().setScale(100.f, 100.f, 100.f);
-            geosphere.getTransform().setPosition(0.f, 0.f, 0.f);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new LoadingTask(gvrContext).execute();
 
         GVRSceneObject solarSystem = buildSolarSystem(gvrContext, scene);
         scene.addSceneObject(solarSystem);
@@ -60,6 +56,11 @@ final class Main extends GVRMain {
             animation.start(gvrContext.getAnimationEngine());
         }
         mAnimations = null;
+
+    }
+
+    private void sceneLoaded(GVRModelSceneObject result) {
+        scene.addSceneObject(result);
     }
 
     @Override
@@ -132,7 +133,6 @@ final class Main extends GVRMain {
         GVRSphereSceneObject environment = new GVRSphereSceneObject(context, 18, 36, false, material, 4, 4);
         environment.getTransform().setScale(120.0f, 120.0f, 120.0f);
 
-
         GVRDirectLight sunLight = new GVRDirectLight(context);
         sunLight.setAmbientIntensity(0.4f, 0.4f, 0.4f, 1.0f);
         sunLight.setDiffuseIntensity(0.6f, 0.6f, 0.6f, 1.0f);
@@ -142,5 +142,40 @@ final class Main extends GVRMain {
         environment.attachComponent(sunLight);
 
         return environment;
+    }
+
+    private class LoadingTask extends AsyncTask<String, Void, GVRModelSceneObject> {
+
+        private GVRContext gvrContext;
+
+        LoadingTask(GVRContext gvrContext) {
+            this.gvrContext = gvrContext;
+        }
+
+        @Override
+        protected GVRModelSceneObject doInBackground(String... params) {
+            // $$$$ read model name
+            GVRModelSceneObject geosphere = null;
+            try {
+                geosphere = gvrContext.getAssetLoader().loadModel("biosphere3-3ds/biosphere3.3ds");
+                geosphere.getTransform().setScale(100.f, 100.f, 100.f);
+                geosphere.getTransform().setPosition(0.f, 0.f, 0.f);
+            } catch (Exception e) {
+                // $$$$ TODO retry
+                e.printStackTrace();
+            }
+            return geosphere;
+        }
+
+        @Override
+        protected void onPostExecute(GVRModelSceneObject result) {
+            Main.this.sceneLoaded(result); // $$$$ faudrait unsubscribe aussi
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 }
