@@ -2,6 +2,7 @@ package com.nocomment.sphevres;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 
 public class MyApplication extends Application {
@@ -11,6 +12,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        Intent service = new Intent(this.getApplicationContext(), AngelService.class);
+        startService(service);
     }
     @Override
     public Context getApplicationContext() {
