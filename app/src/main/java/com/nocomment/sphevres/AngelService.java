@@ -41,7 +41,7 @@ public class AngelService extends Service {
 
                 // $$$$ TODO : update notif msg
 
-                Toast.makeText(AngelService.this, "Service is still running (" + (msgId++) + ")", Toast.LENGTH_LONG).show();
+                //Toast.makeText(AngelService.this, "Service is still running (" + (msgId++) + ")", Toast.LENGTH_LONG).show();
                 handler.postDelayed(runnable, 10000);
             }
         };
