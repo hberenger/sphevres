@@ -2,6 +2,7 @@ package com.nocomment.sphevres;
 
 import android.app.ActivityManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -19,7 +20,9 @@ public class AngelService extends Service {
 
     public Handler handler = null;
     public Runnable runnable = null;
-    private int msgId = 1;
+    private static final int kNotificationID = 1729;
+    private int checkCount = 0;
+    private int respawnCount = 0;
 
     @Override
     public void onCreate() {
@@ -33,14 +36,18 @@ public class AngelService extends Service {
                 ActivityManager activityManager = (ActivityManager) getSystemService (Context.ACTIVITY_SERVICE);
                 List<ActivityManager.RunningTaskInfo> tasksInfos = activityManager.getRunningTasks(Integer.MAX_VALUE);
 
+                checkCount++;
+
                 if (!isMainAppRunning(tasksInfos)) {
-                    Log.e("TOTO", "Main app not running... rebooting !");
+                    Log.e("TOTO", "Main app not running... respawning !");
+                    respawnCount++;
+
                     Intent mainIntent = new Intent(AngelService.this, MainActivity.class);
                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
                     startActivity(mainIntent);
                 }
 
-                // $$$$ TODO : update notif msg
+                updateNotification();
 
                 //Toast.makeText(AngelService.this, "Service is still running (" + (msgId++) + ")", Toast.LENGTH_LONG).show();
                 handler.postDelayed(runnable, 10000);
@@ -74,7 +81,7 @@ public class AngelService extends Service {
         } else if (intent.getAction().equals("start")) {
             Notification notification = buildNotification();
 
-            startForeground(1729, notification);
+            startForeground(AngelService.kNotificationID, notification);
 
             handler.postDelayed(runnable, 10000);
         }
@@ -107,12 +114,23 @@ public class AngelService extends Service {
         NotificationCompat.Action closeAction =
                 new NotificationCompat.Action.Builder(R.drawable.ic_stat_close, "Close service", pendingCloseIntent).build();
 
+        String msg = "I'm your guardian angel!"
+                + System.getProperty("line.separator")
+                + "checks: " + checkCount
+                + " / respawns:" + respawnCount;
+
         return new NotificationCompat.Builder(this)
                 .setContentTitle("Sphevres")
-                .setContentText("I'm your guardian angel!")
+                .setContentText(msg)
                 .setSmallIcon(R.drawable.ic_notif_icon)
                 //.setContentIntent(pendingIntent) // PendingIntent to be sent when the notification is clicked
                 .addAction(closeAction)
                 .build();
+    }
+
+    private void updateNotification() {
+        Notification notification = buildNotification();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(AngelService.kNotificationID, notification);
     }
 }
