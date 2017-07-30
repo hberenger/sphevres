@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -95,22 +96,22 @@ public class AngelService extends Service {
     // PRIVATE
 
     private Notification buildNotification() {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        Intent notificationIntent = new Intent(this, MainActivity.class);
+//        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent closeIntent = new Intent(this, AngelService.class);
         closeIntent.setAction("close");
         PendingIntent pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
 
-        Notification.Action closeAction =
-                new Notification.Action.Builder(R.drawable.ic_stat_close, "Close service", pendingCloseIntent).build();
+        NotificationCompat.Action closeAction =
+                new NotificationCompat.Action.Builder(R.drawable.ic_stat_close, "Close service", pendingCloseIntent).build();
 
-        return new Notification.Builder(this)
+        return new NotificationCompat.Builder(this)
                 .setContentTitle("Sphevres")
                 .setContentText("I'm your guardian angel!")
                 .setSmallIcon(R.drawable.ic_notif_icon)
-                .setContentIntent(pendingIntent)
+                //.setContentIntent(pendingIntent) // PendingIntent to be sent when the notification is clicked
                 .addAction(closeAction)
                 .build();
     }
