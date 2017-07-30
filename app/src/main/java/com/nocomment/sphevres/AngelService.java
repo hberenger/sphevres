@@ -71,24 +71,7 @@ public class AngelService extends Service {
             stopSelf();
             // $$$$ TODO ce serait bien de kill l'app
         } else if (intent.getAction().equals("start")) {
-            Intent notificationIntent = new Intent(this, MainActivity.class);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            Intent closeIntent = new Intent(this, AngelService.class);
-            closeIntent.setAction("close");
-            PendingIntent pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
-
-            Notification.Action closeAction =
-                    new Notification.Action.Builder(R.drawable.ic_stat_close, "Close service", pendingCloseIntent).build();
-
-            Notification notification = new Notification.Builder(this)
-                    .setContentTitle("Sphevres")
-                    .setContentText("I'm your guardian angel!")
-                    .setSmallIcon(R.drawable.ic_notif_icon)
-                    .setContentIntent(pendingIntent)
-                    .addAction(closeAction)
-                    .build();
+            Notification notification = buildNotification();
 
             startForeground(1729, notification);
 
@@ -107,5 +90,28 @@ public class AngelService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    // PRIVATE
+
+    private Notification buildNotification() {
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent closeIntent = new Intent(this, AngelService.class);
+        closeIntent.setAction("close");
+        PendingIntent pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
+
+        Notification.Action closeAction =
+                new Notification.Action.Builder(R.drawable.ic_stat_close, "Close service", pendingCloseIntent).build();
+
+        return new Notification.Builder(this)
+                .setContentTitle("Sphevres")
+                .setContentText("I'm your guardian angel!")
+                .setSmallIcon(R.drawable.ic_notif_icon)
+                .setContentIntent(pendingIntent)
+                .addAction(closeAction)
+                .build();
     }
 }
