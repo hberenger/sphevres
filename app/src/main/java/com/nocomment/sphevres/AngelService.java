@@ -85,7 +85,6 @@ public class AngelService extends Service {
         if (action.equals(ACTION_CLOSE)) {
             stopForeground(true);
             stopSelf();
-            // $$$$ TODO ce serait bien de kill l'app
         } else if (action.equals(ACTION_START)) {
             Notification notification = buildNotification();
 
