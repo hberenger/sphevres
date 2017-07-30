@@ -80,12 +80,12 @@ public class AngelService extends Service {
             PendingIntent pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
 
             Notification.Action closeAction =
-                    new Notification.Action.Builder(R.drawable.ic_close, "Close service", pendingCloseIntent).build();
+                    new Notification.Action.Builder(R.drawable.ic_stat_close, "Close service", pendingCloseIntent).build();
 
             Notification notification = new Notification.Builder(this)
                     .setContentTitle("Sphevres")
                     .setContentText("I'm your guardian angel!")
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_notif_icon)
                     .setContentIntent(pendingIntent)
                     .addAction(closeAction)
                     .build();
