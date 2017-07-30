@@ -44,7 +44,7 @@ final class Main extends GVRMain {
         scene.getMainCameraRig().getLeftCamera().setBackgroundColor(Color.BLUE);
         scene.getMainCameraRig().getRightCamera().setBackgroundColor(Color.BLUE);
 
-        new LoadingTask(gvrContext).execute();
+        new LoadingTask(gvrContext, "biosphere3-3ds/biosphere3.3ds").execute();
 
         GVRSceneObject solarSystem = buildSolarSystem(gvrContext, scene);
         scene.addSceneObject(solarSystem);
@@ -147,17 +147,18 @@ final class Main extends GVRMain {
     private class LoadingTask extends AsyncTask<String, Void, GVRModelSceneObject> {
 
         private GVRContext gvrContext;
+        private String modelName;
 
-        LoadingTask(GVRContext gvrContext) {
+        LoadingTask(GVRContext gvrContext, String modelName) {
             this.gvrContext = gvrContext;
+            this.modelName = modelName;
         }
 
         @Override
         protected GVRModelSceneObject doInBackground(String... params) {
-            // $$$$ read model name
             GVRModelSceneObject geosphere = null;
             try {
-                geosphere = gvrContext.getAssetLoader().loadModel("biosphere3-3ds/biosphere3.3ds");
+                geosphere = gvrContext.getAssetLoader().loadModel(modelName);
                 geosphere.getTransform().setScale(100.f, 100.f, 100.f);
                 geosphere.getTransform().setPosition(0.f, 0.f, 0.f);
             } catch (Exception e) {
