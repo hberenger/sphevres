@@ -17,7 +17,7 @@ public class MyApplication extends Application {
         instance = this;
 
         Intent service = new Intent(this.getApplicationContext(), AngelService.class);
-        service.setAction("start"); // $$$$
+        service.setAction(AngelService.ACTION_START);
         Log.i(TAG, "App starts service !");
         startService(service);
     }

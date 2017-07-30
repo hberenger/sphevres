@@ -18,6 +18,9 @@ import java.util.List;
 
 public class AngelService extends Service {
 
+    public static final String ACTION_START = "start";
+    public static final String ACTION_CLOSE = "close";
+
     private static final String TAG = "SPHEVRES::AngelService";
 
     public Handler handler = null;
@@ -79,11 +82,11 @@ public class AngelService extends Service {
         String action = (intent != null) ?  intent.getAction() : "null";
         Log.i(TAG, "Service received 'onStart' with action : " + action);
 
-        if (action.equals("close")) { // $$$$ constant
+        if (action.equals(ACTION_CLOSE)) {
             stopForeground(true);
             stopSelf();
             // $$$$ TODO ce serait bien de kill l'app
-        } else if (action.equals("start")) {
+        } else if (action.equals(ACTION_START)) {
             Notification notification = buildNotification();
 
             startForeground(AngelService.kNotificationID, notification);
@@ -114,7 +117,7 @@ public class AngelService extends Service {
 //        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent closeIntent = new Intent(this, AngelService.class);
-        closeIntent.setAction("close");
+        closeIntent.setAction(ACTION_CLOSE);
         PendingIntent pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
 
         NotificationCompat.Action closeAction =
