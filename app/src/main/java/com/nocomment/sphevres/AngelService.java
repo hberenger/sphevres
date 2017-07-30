@@ -91,6 +91,7 @@ public class AngelService extends Service {
 
     @Override
     public void onDestroy() {
+        handler.removeCallbacks(runnable);
         Toast.makeText(this, "Service stopped", Toast.LENGTH_LONG).show();
     }
 
