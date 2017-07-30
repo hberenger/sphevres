@@ -18,6 +18,8 @@ import java.util.List;
 
 public class AngelService extends Service {
 
+    private static final String TAG = "SPHEVRES::AngelService";
+
     public Handler handler = null;
     public Runnable runnable = null;
     private static final int kNotificationID = 1729;
@@ -28,18 +30,19 @@ public class AngelService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
+        Log.i(TAG, "Service created !");
 
         handler = new Handler();
         runnable = new Runnable() {
             public void run() {
+                Log.d(TAG, "Service main loop");
                 ActivityManager activityManager = (ActivityManager) getSystemService (Context.ACTIVITY_SERVICE);
                 List<ActivityManager.RunningTaskInfo> tasksInfos = activityManager.getRunningTasks(Integer.MAX_VALUE);
 
                 checkCount++;
 
                 if (!isMainAppRunning(tasksInfos)) {
-                    Log.e("TOTO", "Main app not running... respawning !");
+                    Log.w(TAG, "Main app not running... respawning !");
                     respawnCount++;
 
                     Intent mainIntent = new Intent(AngelService.this, MainActivity.class);
@@ -49,7 +52,6 @@ public class AngelService extends Service {
 
                 updateNotification();
 
-                //Toast.makeText(AngelService.this, "Service is still running (" + (msgId++) + ")", Toast.LENGTH_LONG).show();
                 handler.postDelayed(runnable, 10000);
             }
         };
@@ -74,11 +76,14 @@ public class AngelService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals("close")) { // $$$$ constant
+        String action = (intent != null) ?  intent.getAction() : "null";
+        Log.i(TAG, "Service received 'onStart' with action : " + action);
+
+        if (action.equals("close")) { // $$$$ constant
             stopForeground(true);
             stopSelf();
             // $$$$ TODO ce serait bien de kill l'app
-        } else if (intent.getAction().equals("start")) {
+        } else if (action.equals("start")) {
             Notification notification = buildNotification();
 
             startForeground(AngelService.kNotificationID, notification);
