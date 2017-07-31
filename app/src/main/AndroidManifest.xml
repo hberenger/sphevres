@@ -36,7 +36,7 @@
         <service
             android:name=".AngelService"
             android:exported="true"
-            android:process=":angel"
+            android:process="@string/angel_process_name"
             >
         </service>
 
