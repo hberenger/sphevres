@@ -57,7 +57,7 @@ final class MainHosmer extends Main {
 
 
     @Override
-    public void sceneLoaded(GVRModelSceneObject result, GVRContext gvrContext) {
+    public void sceneLoaded(GVRModelSceneObject result, GVRContext gvrContext, int tag) {
         float scale = 0.5f;
         result.getTransform().setScale(scale, scale, scale);
         // x vers la droite, y vers le haut, z derrière

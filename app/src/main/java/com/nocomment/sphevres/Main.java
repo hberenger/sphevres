@@ -26,7 +26,7 @@ abstract class Main extends GVRMain {
         cameraRig.getRightCamera().setBackgroundColor(Color.BLUE);
     }
 
-    abstract public void sceneLoaded(GVRModelSceneObject result, GVRContext gvrContext);
+    abstract public void sceneLoaded(GVRModelSceneObject result, GVRContext gvrContext, int tag);
 
     @Override
     public SplashMode getSplashMode() {
@@ -40,16 +40,21 @@ abstract class Main extends GVRMain {
         }
     }
 
+    public void loadModel(GVRContext gvrContext, String name, int tag) {
+        new LoadingTask(gvrContext, name, tag).execute();
+    }
+
     public void loadModel(GVRContext gvrContext, String name) {
-        new LoadingTask(gvrContext, name).execute();
+        loadModel(gvrContext, name, 0);
     }
 
     private class LoadingTask extends AsyncTask<String, Void, GVRModelSceneObject> {
 
         private GVRContext gvrContext;
         private String modelName;
+        private int tag;
 
-        LoadingTask(GVRContext gvrContext, String modelName) {
+        LoadingTask(GVRContext gvrContext, String modelName, int tag) {
             this.gvrContext = gvrContext;
             this.modelName = modelName;
         }
@@ -68,7 +73,7 @@ abstract class Main extends GVRMain {
 
         @Override
         protected void onPostExecute(GVRModelSceneObject result) {
-            Main.this.sceneLoaded(result, gvrContext); // $$$$ faudrait unsubscribe aussi
+            Main.this.sceneLoaded(result, gvrContext, tag); // $$$$ faudrait unsubscribe aussi
         }
 
         @Override
