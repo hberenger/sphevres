@@ -36,7 +36,7 @@ public class MainActivity extends GVRActivity {
 
         player = new AmbisonicPlayer(this.getApplicationContext());
 
-        setMain(new Main(player), "gvr.xml");
+        setMain(new MainMontreal(player), "gvr.xml");
     }
 
     @Override
