@@ -33,7 +33,15 @@ final class MainHosmer extends Main {
         super.onInit(gvrContext);
         scene = gvrContext.getMainScene();
 
-        loadModel(gvrContext, "Hosmer-3ds.3ds");
+        loadModel(gvrContext, "hosmer/0-phare.3ds");
+        loadModel(gvrContext, "hosmer/1-mercure.3ds");
+        loadModel(gvrContext, "hosmer/2-venus.3ds");
+        loadModel(gvrContext, "hosmer/3-terre.3ds");
+        loadModel(gvrContext, "hosmer/4-mars.3ds");
+        loadModel(gvrContext, "hosmer/5-jupiter.3ds");
+        loadModel(gvrContext, "hosmer/6-saturne.3ds");
+        loadModel(gvrContext, "hosmer/7-uranus.3ds");
+        loadModel(gvrContext, "hosmer/8-neptune.3ds");
 
         GVRSceneObject solarSystem = buildSolarSystem(gvrContext, scene);
         scene.addSceneObject(solarSystem);
