@@ -6,10 +6,12 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import org.gearvrf.GVRActivity;
+import org.gearvrf.utility.DockEventReceiver;
 
 public class MainActivity extends GVRActivity {
 
     private AmbisonicPlayer player;
+    private DockEventReceiver dockEventReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,29 @@ public class MainActivity extends GVRActivity {
         player = new AmbisonicPlayer(this.getApplicationContext());
 
         setMain(new MainMontreal(player), "gvr.xml");
+
+        // Detecting when the headset is used by someone
+        dockEventReceiver = new DockEventReceiver(this, new Runnable() {
+            @Override
+            public void run() {
+//                MediaPlayer mPlayer = MediaPlayer.create(MainActivity.this, R.raw.neon);
+//                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//                mPlayer.start();
+
+                if (player != null) {
+                    player.rewind();
+                }
+            }
+        }, new Runnable() {
+            @Override
+            public void run() {
+                // nothing to do
+//                MediaPlayer mPlayer = MediaPlayer.create(MainActivity.this, R.raw.neon);
+//                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//                mPlayer.start();
+            }
+        });
+        dockEventReceiver.start();
     }
 
     @Override
