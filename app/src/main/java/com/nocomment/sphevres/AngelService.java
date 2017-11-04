@@ -90,7 +90,7 @@ public class AngelService extends Service {
 
             startForeground(AngelService.kNotificationID, notification);
 
-            handler.postDelayed(runnable, 10000);
+            handler.postDelayed(runnable, 15000);
         }
 
         return START_STICKY;
