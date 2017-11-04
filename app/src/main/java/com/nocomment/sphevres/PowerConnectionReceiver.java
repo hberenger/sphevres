@@ -8,8 +8,14 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.BatteryManager;
 import android.os.Handler;
+import android.util.Log;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
+
+    private static final String TAG = "SPHEVRES::PowerRcv";
+
+    private static long lastConnectionTimestamp = 0;
+    private static long quickConnectionCount = 0;
 
     @Override
     public void onReceive(Context context, Intent batteryStatus) {
@@ -21,6 +27,11 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
             audioManager.setSpeakerphoneOn(false);
 
             playAlert(context, R.raw.chime);
+            long d = countConnectionEvents();
+
+            // Toast.makeText(context, "connectionCount = " + quickConnectionCount + "(since " + d +")", Toast.LENGTH_SHORT).show();
+
+            checkManualStart(context);
 
         } else if (batteryStatus.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -62,5 +73,34 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
         boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
+    }
+
+    private long countConnectionEvents() {
+        long now = System.currentTimeMillis();
+        long delay = now - lastConnectionTimestamp;
+
+        if (lastConnectionTimestamp == 0 || delay > 10000) {
+            lastConnectionTimestamp = now;
+            quickConnectionCount = 0;
+        } else {
+            quickConnectionCount++;
+        }
+        return delay;
+    }
+
+    private void checkManualStart(Context context) {
+        if (quickConnectionCount != 3) {
+            return;
+        }
+        Context appContext = context.getApplicationContext();
+        Intent service = new Intent(appContext, AngelService.class);
+        service.setAction(AngelService.ACTION_START);
+        Log.w(TAG, "Manual service start !");
+        appContext.getApplicationContext().startService(service);
+
+        Intent mainIntent = new Intent(appContext, MainActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        Log.w(TAG, "Manual app start !");
+        appContext.startActivity(mainIntent);
     }
 }
