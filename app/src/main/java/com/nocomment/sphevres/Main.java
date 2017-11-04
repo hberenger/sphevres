@@ -57,6 +57,7 @@ abstract class Main extends GVRMain {
         LoadingTask(GVRContext gvrContext, String modelName, int tag) {
             this.gvrContext = gvrContext;
             this.modelName = modelName;
+            this.tag = tag;
         }
 
         @Override
