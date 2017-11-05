@@ -2,7 +2,6 @@ package com.nocomment.sphevres;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.Toast;
 
 import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
@@ -29,12 +28,12 @@ public class MainActivity extends GVRActivity {
             Toast.makeText(this, "App restarted after crash", Toast.LENGTH_SHORT).show();
         } else {
             // crash after 10 sec - to test the Restart exception Handler
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    throw new NullPointerException();
-                }
-            }, 10000);
+            // new Handler().postDelayed(new Runnable() {
+            //    @Override
+            //    public void run() {
+            //        throw new NullPointerException();
+            //    }
+            //}, 10000);
         }
 
         PowerConnectionReceiver.checkBattery(this);
