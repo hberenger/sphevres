@@ -31,9 +31,8 @@ public class AlertService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mPlayer = MediaPlayer.create(this, R.raw.chime);
+        mPlayer = MediaPlayer.create(this, R.raw.alarme2);
         mPlayer.setLooping(true); // Set looping
-        mPlayer.setVolume(100,100);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         timer = new Timer();

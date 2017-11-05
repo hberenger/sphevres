@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.util.Log;
 
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
@@ -35,11 +36,14 @@ public class BeaconDetector {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
+                    Log.d("beacon", "Monitoring stopped !");
                     beaconManager.stopRanging(mRegion);
                 } else if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
+                    Log.d("beacon", "Try to start monitoring");
                     if (ready) {
                         // Toast.makeText(context, "beacon : start ranging", Toast.LENGTH_SHORT).show();
                         beaconManager.startRanging(mRegion);
+                        Log.d("beacon", "Ranging started !");
                     }
                 }
             }
@@ -62,6 +66,10 @@ public class BeaconDetector {
             public void onServiceReady() {
                 beaconManager.startMonitoring(mRegion);
                 ready = true;
+                if (!isConnected(context)) {
+                    Log.d("beacon", "Ranging fresh start !");
+                    beaconManager.startRanging(mRegion);
+                }
             }
         });
 
@@ -101,10 +109,17 @@ public class BeaconDetector {
     }
 
     public void stop(Context context) {
+        Log.d("beacon", "Detector stoooopped !");
         context.unregisterReceiver(mBroadcastReceiver);
         receiverRegistered = false;
         beaconManager.stopMonitoring(mRegion.getIdentifier());
         beaconManager.stopRanging(mRegion);
         ready = false;
+    }
+
+    public static boolean isConnected(Context context) {
+        Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+        return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
     }
 }
