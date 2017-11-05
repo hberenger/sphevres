@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.BatteryManager;
-import android.os.Handler;
 import android.util.Log;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
@@ -30,37 +28,29 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
             audioManager.setMode(AudioManager.MODE_NORMAL);
             audioManager.setSpeakerphoneOn(false);
 
-            playAlert(context, R.raw.chime);
             long d = countConnectionEvents();
 
             // Toast.makeText(context, "connectionCount = " + quickConnectionCount + "(since " + d +")", Toast.LENGTH_SHORT).show();
 
             checkManualStart(context);
 
+            // stop alert service
+            Intent service = new Intent(context.getApplicationContext(), AlertService.class);
+            context.getApplicationContext().stopService(service);
         } else if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
             audioManager.setSpeakerphoneOn(true);
             audioManager.setStreamVolume (AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
 
-            playAlert(context, R.raw.ahem);
+            // start alert service
+            Intent service = new Intent(context.getApplicationContext(), AlertService.class);
+            context.getApplicationContext().startService(service);
         } else if (intent.getAction().equals(PROXIMITY_INTENT)) {
             Log.d("beacon - receiver", "beacon at close range");
         }
     }
 
-    private void playAlert(Context context, int id) {
-        final MediaPlayer mPlayer = MediaPlayer.create(context, id);
-        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mPlayer.start();
-            }
-        }, 2000);
-    }
 
     static void checkBattery(Context context) {
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
