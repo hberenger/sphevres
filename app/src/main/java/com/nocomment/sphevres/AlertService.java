@@ -42,7 +42,7 @@ public class AlertService extends Service {
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(PowerConnectionReceiver.PROXIMITY_INTENT)) {
+                if (intent.getAction().equals(BeaconDetector.PROXIMITY_INTENT)) {
                     Log.d("beacon - service", "beacon at close range");
                     Toast.makeText(context, "beacon at close range", Toast.LENGTH_SHORT).show();
                     lastCloseBeaconTimestamp = System.currentTimeMillis();
@@ -54,7 +54,7 @@ public class AlertService extends Service {
         Log.d("coucou", "started");
         lastCloseBeaconTimestamp = -1;
         startTime = System.currentTimeMillis();
-        registerReceiver(mBroadcastReceiver, new IntentFilter(PowerConnectionReceiver.PROXIMITY_INTENT));
+        registerReceiver(mBroadcastReceiver, new IntentFilter(BeaconDetector.PROXIMITY_INTENT));
         receiverRegistered = true;
         mPlayer.start();
         timer.scheduleAtFixedRate(new TimerTask() {

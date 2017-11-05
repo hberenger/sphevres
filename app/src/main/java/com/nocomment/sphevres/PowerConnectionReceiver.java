@@ -15,9 +15,6 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     private static long lastConnectionTimestamp = 0;
     private static long quickConnectionCount = 0;
 
-    public static final String PROXIMITY_INTENT = "com.nocomment.sphevres.beacon.PROXIMITY";
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -46,8 +43,6 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
             // start alert service
             Intent service = new Intent(context.getApplicationContext(), AlertService.class);
             context.getApplicationContext().startService(service);
-        } else if (intent.getAction().equals(PROXIMITY_INTENT)) {
-            Log.d("beacon - receiver", "beacon at close range");
         }
     }
 

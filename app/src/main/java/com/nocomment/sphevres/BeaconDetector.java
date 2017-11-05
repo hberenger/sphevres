@@ -13,6 +13,9 @@ import java.util.UUID;
 
 
 public class BeaconDetector {
+
+    public static final String PROXIMITY_INTENT = "com.nocomment.sphevres.beacon.PROXIMITY";
+
     private BeaconManager beaconManager;
     private BeaconRegion mRegion;
 
@@ -60,7 +63,7 @@ public class BeaconDetector {
 
                     if (found) {
                         Intent intent = new Intent();
-                        intent.setAction(PowerConnectionReceiver.PROXIMITY_INTENT);
+                        intent.setAction(BeaconDetector.PROXIMITY_INTENT);
                         context.sendBroadcast(intent);
                     }
                 }
