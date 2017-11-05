@@ -116,4 +116,9 @@ final class MainHosmer extends Main {
 
         return environment;
     }
+
+    @Override
+    public float getWalkStep() {
+        return 0.5f;
+    }
 }

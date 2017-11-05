@@ -135,15 +135,7 @@ final class MainLedoux extends Main {
     }
 
     @Override
-    public boolean onBackPress() {
-        float[] dir = scene.getMainCameraRig().getLookAt();
-        for (int i = 0; i < 3; ++i) {
-            dir[i] *= 50.f;
-        }
-        float x = scene.getMainCameraRig().getTransform().getPositionX();
-        float y = scene.getMainCameraRig().getTransform().getPositionY();
-        float z = scene.getMainCameraRig().getTransform().getPositionZ();
-        scene.getMainCameraRig().getTransform().setPosition(x + dir[0], y + dir[1], z + dir[2]);
-        return true;
+    public float getWalkStep() {
+        return 50.f;
     }
 }
