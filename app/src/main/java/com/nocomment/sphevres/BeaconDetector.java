@@ -92,7 +92,7 @@ public class BeaconDetector {
                     boolean found = false;
                     for (Beacon beacon : beacons) {
                         Log.d("Beacon", "Beacon " + beacons.indexOf(beacon) + " detected with power=" + beacon.getMeasuredPower() + " rssi=" + beacon.getRssi());
-                        if (beacon.getRssi() > -85) {
+                        if (beacon.getRssi() > -82) {
                             found = true;
                             break;
                         }
