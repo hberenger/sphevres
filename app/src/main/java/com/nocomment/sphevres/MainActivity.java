@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
+
 import org.gearvrf.GVRActivity;
 import org.gearvrf.utility.DockEventReceiver;
 
@@ -82,6 +84,7 @@ public class MainActivity extends GVRActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        SystemRequirementsChecker.checkWithDefaultDialogs(this);
         if (player != null) {
             player.rewind();
         }
