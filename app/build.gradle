@@ -22,6 +22,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -56,4 +57,5 @@ dependencies {
     compile 'com.google.vr:sdk-base:1.70.0'
     compile 'com.google.vr:sdk-audio:1.70.0'
     compile 'com.google.android.exoplayer:exoplayer:r2.4.3'
+    compile 'com.estimote:sdk:1.4.0'
 }
