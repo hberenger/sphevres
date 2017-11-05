@@ -17,11 +17,15 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     private static long lastConnectionTimestamp = 0;
     private static long quickConnectionCount = 0;
 
-    @Override
-    public void onReceive(Context context, Intent batteryStatus) {
-        PowerConnectionReceiver.readBatteryInfo(batteryStatus);
+    public static final String PROXIMITY_INTENT = "com.nocomment.sphevres.beacon.PROXIMITY";
 
-        if (batteryStatus.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+
+        if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
+            // PowerConnectionReceiver.readBatteryInfo(intent);
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             audioManager.setMode(AudioManager.MODE_NORMAL);
             audioManager.setSpeakerphoneOn(false);
@@ -33,13 +37,15 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
             checkManualStart(context);
 
-        } else if (batteryStatus.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
+        } else if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
             audioManager.setSpeakerphoneOn(true);
             audioManager.setStreamVolume (AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
 
             playAlert(context, R.raw.ahem);
+        } else if (intent.getAction().equals(PROXIMITY_INTENT)) {
+            Log.d("beacon - receiver", "beacon at close range");
         }
     }
 

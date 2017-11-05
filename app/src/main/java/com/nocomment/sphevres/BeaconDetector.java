@@ -1,6 +1,7 @@
 package com.nocomment.sphevres;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
@@ -22,7 +23,7 @@ public class BeaconDetector {
                 null, null);
     }
 
-    void start(Context context) {
+    void start(final Context context) {
         beaconManager = new BeaconManager(context);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
@@ -48,10 +49,20 @@ public class BeaconDetector {
             @Override
             public void onBeaconsDiscovered(BeaconRegion beaconRegion, List<Beacon> beacons) {
                 if (beacons != null && !beacons.isEmpty()) {
+                    boolean found = false;
                     for (Beacon beacon : beacons) {
                         Log.d("Beacon", "Beacon " + beacons.indexOf(beacon) + " detected with power=" + beacon.getMeasuredPower() + " rssi=" + beacon.getRssi());
+                        if (beacon.getRssi() > -80) {
+                            found = true;
+                            break;
+                        }
                     }
 
+                    if (found) {
+                        Intent intent = new Intent();
+                        intent.setAction(PowerConnectionReceiver.PROXIMITY_INTENT);
+                        context.sendBroadcast(intent);
+                    }
                 }
             }
         });
