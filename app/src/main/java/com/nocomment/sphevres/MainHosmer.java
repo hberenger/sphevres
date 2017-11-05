@@ -14,14 +14,16 @@ import org.gearvrf.scene_objects.GVRModelSceneObject;
 import org.gearvrf.scene_objects.GVRSphereSceneObject;
 import org.joml.Quaternionf;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
 final class MainHosmer extends Main {
 
+    static int kPHARE_TAG = 1;
+
     private List<GVRAnimation> mAnimations = new ArrayList<GVRAnimation>();
+    private int planetLoadCounter = 8;
     private GVRScene scene;
 
     MainHosmer(AmbisonicPlayer player) {
@@ -33,7 +35,7 @@ final class MainHosmer extends Main {
         super.onInit(gvrContext);
         scene = gvrContext.getMainScene();
 
-        loadModel(gvrContext, "hosmer/0-phare.3ds");
+        loadModel(gvrContext, "hosmer/0-phare.3ds", kPHARE_TAG);
         loadModel(gvrContext, "hosmer/1-mercure.3ds");
         loadModel(gvrContext, "hosmer/2-venus.3ds");
         loadModel(gvrContext, "hosmer/3-terre.3ds");
@@ -43,12 +45,11 @@ final class MainHosmer extends Main {
         loadModel(gvrContext, "hosmer/7-uranus.3ds");
         loadModel(gvrContext, "hosmer/8-neptune.3ds");
 
-        GVRSceneObject solarSystem = buildSolarSystem(gvrContext, scene);
-        scene.addSceneObject(solarSystem);
-
         GVRSceneObject environment = buildEnvironment(gvrContext);
         scene.addSceneObject(environment);
+    }
 
+    private void startAnimations(GVRContext gvrContext) {
         for (GVRAnimation animation : mAnimations) {
             animation.start(gvrContext.getAnimationEngine());
         }
@@ -57,54 +58,32 @@ final class MainHosmer extends Main {
 
 
     @Override
-    public void sceneLoaded(GVRModelSceneObject result, GVRContext gvrContext, int tag) {
+    public void sceneLoaded(GVRModelSceneObject model, GVRContext gvrContext, int tag) {
+        GVRSceneObject result = model;
+
+        if (tag != kPHARE_TAG) {
+            GVRSceneObject planetPositionObject = new GVRSceneObject(gvrContext);
+
+            GVRSceneObject planetRotationObject = new GVRSceneObject(gvrContext);
+            planetPositionObject.addChildObject(planetRotationObject);
+
+            rotate(planetRotationObject, 10.f);
+
+            planetRotationObject.addChildObject(result);
+            result = planetPositionObject;
+            planetLoadCounter--;
+        }
+
         float scale = 0.5f;
         result.getTransform().setScale(scale, scale, scale);
         // x vers la droite, y vers le haut, z derrière
-        result.getTransform().setPosition(0.f, -5.f, -10.f);
+        result.getTransform().setPosition(0.f, -10.f, -2.5f);
 
         scene.addSceneObject(result);
-    }
 
-
-    private GVRSceneObject buildSolarSystem(GVRContext gvrContext, GVRScene scene) throws IOException {
-        GVRSceneObject globalPositionObject = new GVRSceneObject(gvrContext);
-        globalPositionObject.getTransform().setPosition(25.f, 0.f, 0.f);
-
-        GVRSceneObject globalRotationObject = new GVRSceneObject(gvrContext);
-        globalPositionObject.addChildObject(globalRotationObject);
-        rotate(globalRotationObject, 30.f);
-
-        // mercure
-        float radius = 60.f;
-        GVRSceneObject mercure = addPlanet(gvrContext, scene, radius, 0.0f, "mercure/sphere_mercury.obj", 5.f);
-        globalRotationObject.addChildObject(mercure);
-        rotate(mercure.getChildByIndex(0), 10.f);
-
-        // venus
-        GVRSceneObject venus = addPlanet(gvrContext, scene, -radius / 2.f, radius * (float)Math.sqrt(3.0) / 2.f, "venus/sphere_venus.obj", 7.5f);
-        globalRotationObject.addChildObject(venus);
-        rotate(venus.getChildByIndex(0), 5.f, true);
-
-        // mars
-        GVRSceneObject mars = addPlanet(gvrContext, scene, -radius / 2.f, -radius * (float)Math.sqrt(3.0) / 2.f, "mars/sphere_mars.obj", 10.0f);
-        globalRotationObject.addChildObject(mars);
-        rotate(mars.getChildByIndex(0), 5.f);
-        return globalPositionObject;
-    }
-
-    private GVRSceneObject addPlanet(GVRContext gvrContext, GVRScene scene, float x, float z, String filePath, float k) throws IOException {
-        GVRSceneObject planetRevolutionObject = new GVRSceneObject(gvrContext);
-        planetRevolutionObject.getTransform().setPosition(x, 5.0f, z);
-
-        GVRSceneObject planetRotationObject = new GVRSceneObject(gvrContext);
-        planetRevolutionObject.addChildObject(planetRotationObject);
-
-        GVRSceneObject meshObject = gvrContext.getAssetLoader().loadModel(filePath, scene);
-        meshObject.getTransform().setScale(k, k, k);
-        planetRotationObject.addChildObject(meshObject);
-
-        return planetRevolutionObject;
+        if (planetLoadCounter == 0 && mAnimations != null) {
+            startAnimations(gvrContext);
+        }
     }
 
     private void rotate(GVRSceneObject object, float duration, boolean inverse) {
