@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,7 +43,7 @@ public class AlertService extends Service {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(BeaconDetector.PROXIMITY_INTENT)) {
                     Log.d("beacon - service", "beacon at close range");
-                    Toast.makeText(context, "beacon at close range", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, "beacon at close range", Toast.LENGTH_SHORT).show();
                     lastCloseBeaconTimestamp = System.currentTimeMillis();
                 }
             }
@@ -61,8 +60,9 @@ public class AlertService extends Service {
             @Override
             public void run() {
                 long now = System.currentTimeMillis();
-                if ( (lastCloseBeaconTimestamp < 0 && (now - startTime) > 2000)
-                    || (lastCloseBeaconTimestamp > 0 && (now - lastCloseBeaconTimestamp) > 2000)) {
+                Log.d("beacon", "alert : time from start = " + (now - startTime) + " time from last ts =" + (now - lastCloseBeaconTimestamp));
+                if ( (lastCloseBeaconTimestamp < 0 && (now - startTime) > 4500)
+                    || (lastCloseBeaconTimestamp > 0 && (now - lastCloseBeaconTimestamp) > 4500)) {
                     // launch alarm
                     mHandler.post(new Runnable() {
                         @Override
@@ -72,7 +72,7 @@ public class AlertService extends Service {
                             }
                         }
                     });
-                } else if (lastCloseBeaconTimestamp > 0 && (now - lastCloseBeaconTimestamp) < 2000) {
+                } else if (lastCloseBeaconTimestamp > 0 && (now - lastCloseBeaconTimestamp) < 4500) {
                     // stop alarm
                     mHandler.post(new Runnable() {
                         @Override

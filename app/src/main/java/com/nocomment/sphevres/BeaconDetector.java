@@ -1,7 +1,9 @@
 package com.nocomment.sphevres;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
@@ -19,20 +21,47 @@ public class BeaconDetector {
     private BeaconManager beaconManager;
     private BeaconRegion mRegion;
 
+    private BroadcastReceiver mBroadcastReceiver;
+    private boolean receiverRegistered;
+    private boolean ready;
+
     BeaconDetector() {
         mRegion = new BeaconRegion(
                 "Globes",
                 UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"),
                 null, null);
+
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
+                    beaconManager.stopRanging(mRegion);
+                } else if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
+                    if (ready) {
+                        // Toast.makeText(context, "beacon : start ranging", Toast.LENGTH_SHORT).show();
+                        beaconManager.startRanging(mRegion);
+                    }
+                }
+            }
+        };
     }
 
     void start(final Context context) {
         beaconManager = new BeaconManager(context);
+        beaconManager.setForegroundScanPeriod(1500, 10);
+        beaconManager.setBackgroundScanPeriod(5000, 25000); // default values
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_POWER_CONNECTED);
+        filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        context.registerReceiver(mBroadcastReceiver, filter);
+        receiverRegistered = true;
+
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
                 beaconManager.startMonitoring(mRegion);
-                beaconManager.startRanging(mRegion);
+                ready = true;
             }
         });
 
@@ -55,7 +84,7 @@ public class BeaconDetector {
                     boolean found = false;
                     for (Beacon beacon : beacons) {
                         Log.d("Beacon", "Beacon " + beacons.indexOf(beacon) + " detected with power=" + beacon.getMeasuredPower() + " rssi=" + beacon.getRssi());
-                        if (beacon.getRssi() > -80) {
+                        if (beacon.getRssi() > -85) {
                             found = true;
                             break;
                         }
@@ -71,8 +100,11 @@ public class BeaconDetector {
         });
     }
 
-    public void stop() {
+    public void stop(Context context) {
+        context.unregisterReceiver(mBroadcastReceiver);
+        receiverRegistered = false;
         beaconManager.stopMonitoring(mRegion.getIdentifier());
         beaconManager.stopRanging(mRegion);
+        ready = false;
     }
 }

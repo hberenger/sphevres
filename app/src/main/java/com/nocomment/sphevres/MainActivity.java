@@ -80,7 +80,7 @@ public class MainActivity extends GVRActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        mBeaconDetector.stop();
+        mBeaconDetector.stop(getApplicationContext());
     }
 
     @Override
