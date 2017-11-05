@@ -41,6 +41,12 @@
             >
         </service>
 
+        <service
+            android:name=".AlertService"
+            android:exported="false"
+            >
+        </service>
+
         <receiver
             android:name=".PowerConnectionReceiver"
             android:enabled="true"
@@ -48,7 +54,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
-                <action android:name="com.nocomment.sphevres.beacon.PROXIMITY"/>
             </intent-filter>
         </receiver>
 
