@@ -39,7 +39,7 @@ public class MainActivity extends GVRActivity {
 
         PowerConnectionReceiver.checkBattery(this);
 
-        player = new AmbisonicPlayer(this.getApplicationContext());
+        //player = new AmbisonicPlayer(this.getApplicationContext());
 
         setMain(new MainMontreal(player), "gvr.xml");
 
@@ -73,7 +73,9 @@ public class MainActivity extends GVRActivity {
     protected void onStart() {
         super.onStart();
 
-        player.start();
+        if (player != null) {
+            player.start();
+        }
         mBeaconDetector.start(getApplicationContext());
     }
 
