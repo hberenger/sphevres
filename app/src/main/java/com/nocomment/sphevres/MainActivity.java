@@ -14,6 +14,7 @@ public class MainActivity extends GVRActivity {
 
     private AmbisonicPlayer player;
     private DockEventReceiver dockEventReceiver;
+    private BeaconDetector mBeaconDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,8 @@ public class MainActivity extends GVRActivity {
             }
         });
         dockEventReceiver.start();
+
+        mBeaconDetector = new BeaconDetector();
     }
 
     @Override
@@ -71,6 +74,13 @@ public class MainActivity extends GVRActivity {
         super.onStart();
 
         player.start();
+        mBeaconDetector.start(getApplicationContext());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mBeaconDetector.stop();
     }
 
     @Override
