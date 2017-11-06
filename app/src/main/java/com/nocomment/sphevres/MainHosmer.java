@@ -16,7 +16,6 @@ import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
 
 final class MainHosmer extends Main {
 
@@ -101,7 +100,7 @@ final class MainHosmer extends Main {
     }
 
     private GVRSceneObject buildEnvironment(GVRContext context) {
-        Future<GVRTexture> tex = context.getAssetLoader().loadFutureCubemapTexture(new GVRAndroidResource(context, R.raw.cubemapgood));
+        GVRTexture tex = context.getAssetLoader().loadCubemapTexture(new GVRAndroidResource(context, R.raw.cubemapgood));
         GVRMaterial material = new GVRMaterial(context, GVRMaterial.GVRShaderType.Cubemap.ID);
         material.setMainTexture(tex);
         GVRSphereSceneObject environment = new GVRSphereSceneObject(context, 18, 36, false, material, 4, 4);
