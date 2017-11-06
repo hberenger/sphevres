@@ -64,12 +64,15 @@ final class MainHosmer extends Main {
         GVRSceneObject result = model;
 
         if (tag != kPHARE_TAG) {
+            //float periods[] = { 88, 225, 365, 687, 4335, 10758, 30687, 60225 };
+            float periods[] =   { 5,   13,  20,  40,  100,   200,   600,  1200 };
+            float period = periods[tag - 2];
             GVRSceneObject planetPositionObject = new GVRSceneObject(gvrContext);
 
             GVRSceneObject planetRotationObject = new GVRSceneObject(gvrContext);
             planetPositionObject.addChildObject(planetRotationObject);
 
-            rotate(planetRotationObject, 10.f);
+            rotate(planetRotationObject, period, false, -2.f * 0.5825f, 1.f, -0.0f);
 
             planetRotationObject.addChildObject(result);
             result = planetPositionObject;
@@ -79,7 +82,7 @@ final class MainHosmer extends Main {
         float scale = 0.5f;
         result.getTransform().setScale(scale, scale, scale);
         // x vers la droite, y vers le haut, z derrière
-        result.getTransform().setPosition(0.f, -10.f, -2.5f);
+        result.getTransform().setPosition(0.5825f, -10.f, +0.0f);
 
         scene.addSceneObject(result);
 
@@ -88,17 +91,13 @@ final class MainHosmer extends Main {
         }
     }
 
-    private void rotate(GVRSceneObject object, float duration, boolean inverse) {
+    private void rotate(GVRSceneObject object, float duration, boolean inverse, float px, float py, float pz) {
         GVRAnimation animation = new GVRRotationByAxisWithPivotAnimation(
                 object, duration, inverse ? -360.f : 360.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f);
+                0.f, 1.0f, 0.f,
+                px, py, pz);
         animation.setRepeatMode(GVRRepeatMode.REPEATED).setRepeatCount(-1);
         mAnimations.add(animation);
-    }
-
-    private void rotate(GVRSceneObject object, float duration) {
-        rotate(object, duration, false);
     }
 
     private GVRSceneObject buildEnvironment(GVRContext context) {
