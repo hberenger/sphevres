@@ -35,15 +35,17 @@ final class MainHosmer extends Main {
         super.onInit(gvrContext);
         scene = gvrContext.getMainScene();
 
-        loadModel(gvrContext, "hosmer/0-phare.3ds", kPHARE_TAG);
-        loadModel(gvrContext, "hosmer/1-mercure.3ds");
-        loadModel(gvrContext, "hosmer/2-venus.3ds");
-        loadModel(gvrContext, "hosmer/3-terre.3ds");
-        loadModel(gvrContext, "hosmer/4-mars.3ds");
-        loadModel(gvrContext, "hosmer/5-jupiter.3ds");
-        loadModel(gvrContext, "hosmer/6-saturne.3ds");
-        loadModel(gvrContext, "hosmer/7-uranus.3ds");
-        loadModel(gvrContext, "hosmer/8-neptune.3ds");
+        scene.getMainCameraRig().getTransform().setPosition(-1.164f, -0.765f, 1.716f);
+
+        loadModel(gvrContext, "hosmer/hosmerhb.3ds", kPHARE_TAG);
+        loadModel(gvrContext, "hosmer/1-mercure.3ds", 2);
+        loadModel(gvrContext, "hosmer/2-venus.3ds", 3);
+        loadModel(gvrContext, "hosmer/3-terre.3ds", 4);
+        loadModel(gvrContext, "hosmer/4-mars.3ds", 5);
+        loadModel(gvrContext, "hosmer/5-jupiter.3ds", 6);
+        loadModel(gvrContext, "hosmer/6-saturne.3ds", 7);
+        loadModel(gvrContext, "hosmer/7-uranus.3ds", 8);
+        loadModel(gvrContext, "hosmer/8-neptune.3ds", 9);
 
         GVRSceneObject environment = buildEnvironment(gvrContext);
         scene.addSceneObject(environment);
