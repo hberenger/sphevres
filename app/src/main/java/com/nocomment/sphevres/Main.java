@@ -16,6 +16,8 @@ import org.gearvrf.scene_objects.GVRSphereSceneObject;
 
 abstract class Main extends GVRMain {
 
+    final static String TAG = "Main-";
+
     private AmbisonicPlayer player;
     private GVRCameraRig cameraRig;
     private GVRScene mMainScene;
@@ -74,8 +76,10 @@ abstract class Main extends GVRMain {
             GVRModelSceneObject geosphere = null;
             try {
                 geosphere = gvrContext.getAssetLoader().loadModel(modelName);
+                Log.d(TAG, "Asset loaded successfully !");
             } catch (Exception e) {
                 // $$$$ TODO retry
+                Log.d(TAG, "Exception while loading asset");
                 e.printStackTrace();
             }
             return geosphere;
@@ -107,7 +111,7 @@ abstract class Main extends GVRMain {
         y += dir[1];
         z += dir[2];
 
-        Log.d("Main", String.format("Going to : (%.3f, %.3f, %.3f", x, y, z));
+        Log.d(TAG, String.format("Going to : (%.3f, %.3f, %.3f", x, y, z));
 
         mMainScene.getMainCameraRig().getTransform().setPosition(x, y, z);
         return true;
