@@ -7,8 +7,12 @@ import android.util.Log;
 import org.gearvrf.GVRCameraRig;
 import org.gearvrf.GVRContext;
 import org.gearvrf.GVRMain;
+import org.gearvrf.GVRMaterial;
+import org.gearvrf.GVRPhongShader;
 import org.gearvrf.GVRScene;
+import org.gearvrf.GVRSceneObject;
 import org.gearvrf.scene_objects.GVRModelSceneObject;
+import org.gearvrf.scene_objects.GVRSphereSceneObject;
 
 abstract class Main extends GVRMain {
 
@@ -111,5 +115,31 @@ abstract class Main extends GVRMain {
 
     public float getWalkStep() {
         return 10.f;
+    }
+
+    public final void addRepere(GVRContext gvrContext) {
+        GVRSceneObject spherex = addCoordinate(gvrContext, 1.0f, 0.0f, 0.0f);
+        mMainScene.addSceneObject(spherex);
+        GVRSceneObject spherey = addCoordinate(gvrContext, 0.0f, 1.0f, 0.0f);
+        mMainScene.addSceneObject(spherey);
+        GVRSceneObject spherez = addCoordinate(gvrContext, 0.0f, 0.0f, 1.0f);
+        mMainScene.addSceneObject(spherez);
+    }
+
+    private GVRSceneObject addCoordinate(GVRContext gvrContext, float x, float y, float z)  {
+        GVRSceneObject sphereObject = new GVRSphereSceneObject(gvrContext);
+        float r = 10.f;
+        sphereObject.getTransform().setPosition(x * r, y * r, z * r);
+
+
+        GVRMaterial flatMaterial;
+        flatMaterial = new GVRMaterial(gvrContext);
+        flatMaterial.setColor((x != 0.f) ? 1.f : 0.f, (y != 0.f) ? 1.f : 0.f, (z != 0.f) ? 1.f : 0.f);
+        flatMaterial.setDiffuseColor((x != 0.f) ? 1.f : 0.f, (y != 0.f) ? 1.f : 0.f, (z != 0.f) ? 1.f : 0.f, 0.8f);
+
+        sphereObject.getRenderData().setShaderTemplate(GVRPhongShader.class);
+        sphereObject.getRenderData().setMaterial(flatMaterial);
+
+        return sphereObject;
     }
 }

@@ -51,12 +51,7 @@ final class MainFriede extends Main {
         loadModel(gvrContext, "friede-3ds.3ds");
         //loadModel(gvrContext, "friede-v2-3ds.3ds");
 
-        GVRSceneObject spherex = addCoordinate(gvrContext, 1.0f, 0.0f, 0.0f);
-        scene.addSceneObject(spherex);
-        GVRSceneObject spherey = addCoordinate(gvrContext, 0.0f, 1.0f, 0.0f);
-        scene.addSceneObject(spherey);
-        GVRSceneObject spherez = addCoordinate(gvrContext, 0.0f, 0.0f, 1.0f);
-        scene.addSceneObject(spherez);
+        addRepere(gvrContext);
 
         mLightObject = buildLight(gvrContext);
         scene.addSceneObject(mLightObject);
@@ -88,23 +83,6 @@ final class MainFriede extends Main {
         resultScaleObject.addChildObject(result);
 
         scene.addSceneObject(resultPositionObject);
-    }
-
-    private GVRSceneObject addCoordinate(GVRContext gvrContext, float x, float y, float z) throws IOException {
-        GVRSceneObject sphereObject = new GVRSphereSceneObject(gvrContext);
-        float r = 10.f;
-        sphereObject.getTransform().setPosition(x * r, y * r, z * r);
-
-
-        GVRMaterial flatMaterial;
-        flatMaterial = new GVRMaterial(gvrContext);
-        flatMaterial.setColor((x != 0.f) ? 1.f : 0.f, (y != 0.f) ? 1.f : 0.f, (z != 0.f) ? 1.f : 0.f);
-        flatMaterial.setDiffuseColor((x != 0.f) ? 1.f : 0.f, (y != 0.f) ? 1.f : 0.f, (z != 0.f) ? 1.f : 0.f, 0.8f);
-
-        sphereObject.getRenderData().setShaderTemplate(GVRPhongShader.class);
-        sphereObject.getRenderData().setMaterial(flatMaterial);
-
-        return sphereObject;
     }
 
     private void translate(GVRScene scene, float distance, float duration) {
