@@ -37,15 +37,8 @@ final class MainLedoux extends Main {
 //        p.setFovY(90);
 //        p = (GVRPerspectiveCamera)(scene.getMainCameraRig().getRightCamera());
 //        p.setFovY(90);
-
-        //loadModel(gvrContext, "ledoux-3ds.3ds");
-        //loadModel(gvrContext, "ledoux-lwo.lwo"); finit par marcher
-        /// loadModel(gvrContext, "ledoux-ply.ply"); blue
-        //loadModel(gvrContext, "ledoux-stl.stl"); // blue
-        //loadModel(gvrContext, "ledoux-v3-blanc.x");
-        //loadModel(gvrContext, "ledoux-v3-x.x");
-        //loadModel(gvrContext, "ledoux-v3-3ds.3ds");
-        loadModel(gvrContext, "ledoux-v3-from3ds.dae");
+        
+        loadModel(gvrContext, "ledoux-inverse.dae");
 
         GVRSceneObject environment = buildEnvironment(gvrContext);
         scene.addSceneObject(environment);
